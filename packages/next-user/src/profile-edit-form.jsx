@@ -1,11 +1,12 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useI18n } from "@vactory/next/i18n"
-import Image from "next/image"
 import { useRouter } from "next/router"
 import { useUpdateUserSession } from "@vactory/next-user"
 import { drupal } from "@vactory/next/api/drupal"
-// import { useFileUpload } from "@vactory/next/hooks"
+import { Input } from "@vactory/ui/input"
+import { Button } from "@vactory/ui/button"
+import { Avatar } from "@vactory/ui/avatar"
 
 const errorFields = {
 	"/data/attributes/mail": "email",
@@ -22,7 +23,6 @@ const EditProfilePage = ({ user, accessToken }) => {
 	const [loading, setLoading] = useState(false)
 	const [loadingPhoto, setLoadingPhoto] = useState(false)
 	const updateUserSession = useUpdateUserSession()
-	// const fileUpload = useFileUpload()
 
 	const {
 		register,
@@ -43,7 +43,6 @@ const EditProfilePage = ({ user, accessToken }) => {
 		const { hide } = Toast.loading("Loading...", { hideAfter: 0 })
 
 		try {
-			// const response = await updateUser(input)
 			const response = await drupal.fetch(
 				`/${locale}/api/user/user/${currentUser.uuid}`,
 				{
@@ -182,17 +181,15 @@ const EditProfilePage = ({ user, accessToken }) => {
 							>
 								First name
 							</label>
-							<input
+							<Input
 								type="text"
 								name="first-name"
 								id="first-name"
-								autoComplete="given-name"
-								className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+								autoComplete="first-name"
 								{...register("first_name", { required: "First name is required" })}
+								hasError={errors.first_name}
+								msgValidation={errors?.first_name?.message}
 							/>
-							{errors.first_name && (
-								<p className="text-red text-xs italic">{errors.first_name.message}</p>
-							)}
 						</div>
 
 						<div className="col-span-6 sm:col-span-3">
@@ -202,17 +199,15 @@ const EditProfilePage = ({ user, accessToken }) => {
 							>
 								Last name
 							</label>
-							<input
+							<Input
 								type="text"
 								name="last-name"
 								id="last-name"
-								autoComplete="family-name"
-								className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+								autoComplete="last-name"
 								{...register("last_name", { required: "Last name is required" })}
+								hasError={errors.last_name}
+								msgValidation={errors?.last_name?.message}
 							/>
-							{errors.last_name && (
-								<p className="text-red text-xs italic">{errors.last_name.message}</p>
-							)}
 						</div>
 
 						<div className="col-span-6 sm:col-span-4">
@@ -222,33 +217,25 @@ const EditProfilePage = ({ user, accessToken }) => {
 							>
 								Email address
 							</label>
-							<input
+							<Input
 								type="text"
 								name="email-address"
 								id="email-address"
 								autoComplete="email"
 								{...register("email", { required: "Email is required" })}
-								className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+								hasError={errors.email}
+								msgValidation={errors?.email?.message}
 							/>
-							{errors.email && (
-								<p className="text-red text-xs italic">{errors.email.message}</p>
-							)}
 						</div>
 
 						<div className="col-span-3">
 							<label className="block text-sm font-medium text-gray-700">Photo</label>
 							<div className="mt-1 flex items-center">
-								<span className="inline-block relative bg-gray-100 rounded-full overflow-hidden h-12 w-12">
+								<span className="inline-block relative">
 									{currentUser?.avatar ? (
-										<Image alt="Me" src={currentUser.avatar} width={48} height={48} />
+										<Avatar src={currentUser.avatar} size="xxlarge" alt="Me" />
 									) : (
-										<svg
-											className="h-full w-full text-gray-300"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-										</svg>
+										<Avatar variant="placeholder" size="xxlarge" />
 									)}
 								</span>
 								<div className="ml-4 flex">
@@ -282,13 +269,9 @@ const EditProfilePage = ({ user, accessToken }) => {
 					</div>
 				</div>
 				<div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-					<button
-						type="submit"
-						disabled={loading}
-						className="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-					>
+					<Button type="submit" disabled={loading}>
 						Save
-					</button>
+					</Button>
 				</div>
 			</div>
 		</form>
